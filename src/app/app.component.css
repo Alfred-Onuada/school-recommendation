@@ -1,0 +1,31 @@
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-0.5rem);
+  }
+  75% {
+    transform: translateX(0.5rem);
+  }
+}
+
+.shake {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.loader {
+  border-top-color: rgb(29 78 216 / 1);
+  border-left-color: rgb(29 78 216 / 1);
+  border-bottom-color: rgb(29 78 216 / 1);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
