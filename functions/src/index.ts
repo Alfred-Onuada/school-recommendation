@@ -18,7 +18,7 @@ const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const getRecommendation = onRequest({timeoutSeconds: 180}, async (request, response) => {
+export const getRecommendation = onRequest({timeoutSeconds: 180, cors: ["https://school-recommendation.web.app", "http://localhost:4200"]}, async (request, response) => {
   // make request to gpt 4 and send back response
   const chat = await openai.chat.completions.create({
     model: "gpt-4-turbo",
