@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { RecommendationService } from './recommendation.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ReactiveFormsModule],
+  imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
@@ -18,6 +20,7 @@ export class AppComponent {
   showError = false;
   editing = true;
   loading = false;
+  @ViewChild('AIResponse', { static: false }) AIResponse!: ElementRef;
   steps = [
     { complete: false, controls: ['firstName', 'lastName', 'gender', 'dateOfBirth', 'phoneNumber', 'email', 'nationality', 'state'] },
     { complete: false, controls: ['highSchool', 'gpa', 'classRank', 'standardizedTests', 'academicHonors', 'englishProficiency', 'otherLanguageProficiency'] },
@@ -27,7 +30,9 @@ export class AppComponent {
     { complete: false, controls: [] },
   ];
 
-  constructor() {
+  constructor(
+    private recommendationService: RecommendationService,
+  ) {
     this.form = new FormGroup({
       // Personal Information
       firstName: new FormControl('', Validators.required),
@@ -95,5 +100,17 @@ export class AppComponent {
 
   handleSubmit() {
     this.loading = true;
+    this.recommendationService.getRecommendation(this.form.value).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.loading = false;
+        this.editing = false;
+        this.AIResponse.nativeElement.innerHTML = response.resp
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('There was an error!', error);
+      }
+    });
   }
 }
